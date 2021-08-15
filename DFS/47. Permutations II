@@ -1,0 +1,43 @@
+Q. Given a collection of numbers, nums, that might contain duplicates, return all possible unique permutations in any order.
+
+Example 1:
+Input: nums = [1,1,2]
+Output:
+[[1,1,2],
+ [1,2,1],
+ [2,1,1]]
+ 
+A. 
+class Solution {
+public:
+    
+    vector<vector<int>> ans;
+    vector<int> temp;
+    bool visited[10];
+    
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        int size = nums.size();
+        
+        sort(nums.begin(), nums.end());
+        
+        dfs(0,0,size,nums);
+        
+        return ans;
+    }
+    void dfs(int idx, int cnt, int size, vector<int>& nums){
+        if(cnt == size){
+            ans.push_back(temp);
+            return;
+        }
+        
+        for(int i = 0; i < nums.size(); i++){
+            if(visited[i]) continue;
+            visited[i] = true;
+            temp.push_back(nums[i]);
+            dfs(i, cnt+1, size, nums);
+            visited[i] = false;
+            temp.pop_back();
+            while(i + 1 < nums.size() && nums[i] == nums[i+1]) i++;   // 앞,뒤 원소 같은 경우 최초 원소의 조합만 출력되고 나머지 원소의 조합의 스킵.
+        }
+    }
+};
