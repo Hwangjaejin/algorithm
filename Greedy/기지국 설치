@@ -1,0 +1,29 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int solution(int n, vector<int> stations, int w)
+{
+    int answer = 0;
+    int len = stations.size();
+    
+    // 중간부분
+    for(int i = 0; i < stations.size() - 1; i++){
+        int dist = stations[i+1] - stations[i] - 1 - 2 * w;
+        if(dist > 0){
+            answer += ceil((double)dist / (2*w+1));
+        }
+    }
+    
+    // 0 ~ 처음 기지국까지
+    int f_dist = stations[0] - w - 1;
+    if(f_dist > 0){
+        answer += ceil((double)f_dist /(2*w+1));
+    }
+    
+    // 마지막 기지국 ~ n 까지
+    int l_dist = n - stations[len-1] - w;
+    if(l_dist > 0){
+        answer += ceil((double)l_dist / (2*w+1));
+    }
+    return answer;
+}
