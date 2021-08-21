@@ -1,0 +1,33 @@
+class Solution {
+public:
+    
+    vector<vector<int>> ans;
+    vector<int> v, temp;
+    bool visited[22];
+    
+    void dfs(int idx, int cnt, int target){
+        if(cnt == target){
+            ans.push_back(temp);
+            return;
+        }
+        for(int i = idx; i < v.size(); i++){
+            if(visited[i]) continue;
+            visited[i] = true;
+            temp.push_back(v[i]);
+            dfs(i, cnt+1, target);
+            temp.pop_back();
+            visited[i] = false;
+        }
+        
+    }
+    vector<vector<int>> combine(int n, int k) {
+        
+        for(int i = 1; i <= n; i++){
+            v.push_back(i);
+        }
+        
+        dfs(0,0,k);
+        
+        return ans;
+    }
+};
