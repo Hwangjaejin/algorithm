@@ -1,0 +1,39 @@
+class Solution {
+    
+public:
+    
+    int m,n;
+    
+    bool dfs(int i, int j, const string& word, vector<vector<char>>& board, int cnt){
+        if(word.size() == cnt) // end condition
+            return true;
+        if (i < 0 || i >= m || j < 0 || j >= n)  
+            return false;
+        if(board[i][j] != word[cnt]) // 현재 board의 char와 word의 다음 index(cnt)의 char가 일치하지 않을 때
+            return false;
+        
+        // match
+        char c = board[i][j];
+        board[i][j] = '*'; // 중복탐색을 피하기위해
+        
+        bool res = dfs(i-1, j, word, board, cnt+1) ||
+                   dfs(i+1, j, word, board, cnt+1) ||
+                   dfs(i, j-1, word, board, cnt+1) ||
+                   dfs(i, j+1, word, board, cnt+1);
+        board[i][j] = c;
+        
+        return res;
+    }
+    
+    bool exist(vector<vector<char>>& board, string word) {
+        m = board.size();
+        n = board[0].size();
+        
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                if(dfs(i,j, word, board, 0)) return true;
+            }
+        }
+        return false;
+    }
+};
