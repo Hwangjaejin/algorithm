@@ -1,0 +1,70 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+bool visited[12];
+map<string, int> m;
+
+bool cmp(const pair<string,int>&a, pair<string,int>&b){
+    if(a.first.size() == b.first.size())
+        return a.second > b.second;
+    return a.first.size() < b.first.size();
+}
+void dfs(int idx, string temp, int target, string s){
+    if(temp.size() == target){
+        m[temp]++;
+        return;
+    }
+    for(int i = idx; i < s.size(); i++){
+        if(visited[i]) continue;
+        visited[i] = true;
+        temp.push_back(s[i]);
+        dfs(i, temp, target, s);
+        temp.pop_back();
+        visited[i] = false;
+    }
+}
+vector<string> solution(vector<string> orders, vector<int> course) {
+    vector<string> answer;
+    
+    for(int i = 0; i < orders.size(); i++){
+        string s = orders[i];
+        sort(s.begin(), s.end());
+        for(int j = 0; j < course.size(); j++){
+            if(s.size() < course[j]) break;
+            string temp = "";
+            memset(visited, false, sizeof(visited));
+            dfs(0, temp, course[j], s);
+        }
+    }
+    vector<pair<string,int>> tmp;
+    
+    for(auto it = m.begin(); it != m.end(); it++){
+        if(it->second >= 2){
+            for(int i = 0; i < course.size(); i++){
+                if(it->first.size() == course[i]){
+                    tmp.push_back({it->first, it->second});
+                    break;
+                }
+            }
+        }
+    }
+    sort(tmp.begin(), tmp.end(), cmp);
+    
+    answer.push_back(tmp[0].first);
+    int current_size = tmp[0].first.size();
+    int mx = tmp[0].second;
+    
+    for(int i = 1; i < tmp.size(); i++){
+        if(tmp[i].first.size() == current_size){
+            if(mx == tmp[i].second)
+                answer.push_back(tmp[i].first);
+        }else if(tmp[i].first.size() > current_size){
+            answer.push_back(tmp[i].first);
+            current_size = tmp[i].first.size();
+            mx = tmp[i].second;
+        }
+    }
+    sort(answer.begin(), answer.end());
+    return answer;
+}
