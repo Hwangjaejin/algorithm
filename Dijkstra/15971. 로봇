@@ -1,0 +1,78 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define INF 987654321
+using ll = long long;
+int dx[4] = { 0,0,1,-1 }; // 동 서 남 북
+int dy[4] = { 1,-1,0,0 };
+
+vector<pair<int, int>> v[100001];
+int dist[100001];
+int trace[100001];
+
+void dijkstra(int start) {
+	dist[start] = 0;
+	priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+	pq.push({ 0, start });
+
+	while (!pq.empty()) {
+		int cost = pq.top().first;
+		int current = pq.top().second;
+
+		pq.pop();
+		if (dist[current] < cost) continue;
+
+		for (int i = 0; i < v[current].size(); i++) {
+			int next = v[current][i].first;
+			int n_cost = v[current][i].second + cost;
+
+			if (dist[next] > n_cost) {
+				dist[next] = n_cost;
+				pq.push({ n_cost, next });
+				trace[next] = current;
+			}
+		}
+	}
+}
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	int N, S, D;
+	cin >> N >> S >> D;
+
+	for (int i = 0; i < N - 1; i++) {
+		int a, b, c;
+		cin >> a >> b >> c;
+
+		v[a].push_back({ b,c });
+		v[b].push_back({ a,c });
+	}
+	for (int i = 1; i <= N; i++) {
+		dist[i] = INF;
+	}
+
+	dijkstra(S);
+
+	vector<int> route;
+	int node = D;
+
+	while (node) {
+		route.push_back(node); // 도착지(node = D)부터 출발지(S)까지 담기게 된다. 
+		node = trace[node];
+	}
+	int mx = 0;
+	for (int i = 0; i < route.size() - 1; i++) {
+		int start = route[i];
+		int dest = route[i + 1];
+
+		for (int j = 0; j < v[start].size(); j++) {
+			if (v[start][j].first == dest) {
+				mx = max(mx, v[start][j].second); // S 부터 D까지의 경로 중 가장 가중치가 큰 간선을 찾는 과정. 그 간선을 사이에 두고 로봇이 마주치면 된다.
+				break;
+			}
+		}
+	}
+	cout << dist[D] - mx;
+	return 0;
+}
