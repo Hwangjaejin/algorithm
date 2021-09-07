@@ -1,0 +1,31 @@
+class Solution {
+public:
+    
+    bool isCycle(vector<int> v[], vector<int> &visited, int i){
+        if(visited[i] == 1) return true;
+        
+        if(visited[i] == 0) {
+            visited[i] = 1;
+            for(int j = 0; j < v[i].size(); j++){
+                if(isCycle(v, visited, v[i][j])) return true;
+            }
+        }
+        visited[i] = 2; // 방문 완료를 뜻함.
+        return false;
+    }
+    
+    bool canFinish(int num, vector<vector<int>>& pre) {
+        vector<int> v[num];
+        vector<int> visited(num, 0);
+        
+        for(int i = 0; i < pre.size(); i++){
+            v[pre[i][1]].push_back(pre[i][0]);
+        }
+        
+        for(int i = 0; i < num; i++){
+            if(isCycle(v, visited, i))
+                return false;
+        }
+        return true;
+    }
+};
