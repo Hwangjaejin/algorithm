@@ -1,0 +1,23 @@
+class Solution {
+public:
+    vector<int> getRow(int rowIndex) {
+        int col = 1;
+        int arr[40][40];
+        
+        for(int i = 0; i <= rowIndex; i++){
+            for(int j = 0; j < col; j++){
+                if(j == 0 || j == col-1){
+                    arr[i][j] = 1;
+                }else{
+                    arr[i][j] = arr[i-1][j-1] + arr[i-1][j];
+                }
+            }
+            col++;
+        }
+        vector<int> result;
+        for(int i = 0; i <= rowIndex; i++){
+            result.push_back(arr[rowIndex][i]);
+        }
+        return result;
+    }
+};
