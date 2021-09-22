@@ -1,0 +1,40 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int find_position(vector<char> &v, char c){
+    for(int i = 0; i < v.size(); i++){
+        if(v[i] == c) return i;
+    }
+    return -1;
+}
+int solution(int n, vector<string> data) {
+    int answer = 0;
+    vector<char> v = {'A','C','F','J','M','N','R','T'};
+    
+    do{
+        bool flag = true;
+        
+        for(int i = 0; i < data.size(); i++){
+            string s = data[i];
+            int a = find_position(v,s[0]);
+            int b = find_position(v,s[2]);
+            int c = s[4] - '0' + 1;
+            
+            if(s[3] == '='){
+                if(abs(a-b) == c) flag = true;
+                else flag = false;
+            }else if(s[3] == '>'){
+                if(abs(a-b) > c) flag = true;
+                else flag = false;
+            }else if(s[3] == '<'){
+                if(abs(a-b) < c) flag = true;
+                else flag = false;
+            }
+            if(!flag) break;
+        }
+        if(flag) answer++;
+    }while(next_permutation(v.begin(), v.end()));
+    
+    return answer;
+}
