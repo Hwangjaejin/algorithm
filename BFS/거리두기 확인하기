@@ -1,0 +1,85 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int dx[4] = {0,0,1,-1};
+int dy[4] = {1,-1,0,0};
+
+vector<int> answer;
+bool visited[5][5];
+int track[5][5];
+char place[5][5];
+
+bool bfs(int a, int b) {
+	queue<pair<int, int>> q;
+	q.push({ a,b });
+	memset(visited, false, sizeof(visited));
+	memset(track, 0, sizeof(track));
+	visited[a][b] = true;
+
+	while (!q.empty()) {
+		int x = q.front().first;
+		int y = q.front().second;
+
+		q.pop();
+
+		for (int i = 0; i < 4; i++) {
+			int nx = x + dx[i];
+			int ny = y + dy[i];
+
+			if (nx < 0 || ny < 0 || nx >= 5 || ny >= 5) continue;
+			if (visited[nx][ny]) continue;
+
+			track[nx][ny] = track[x][y] + 1;
+			if (place[nx][ny] == 'X') track[nx][ny] += 10;
+
+			visited[nx][ny] = true;
+			q.push({ nx,ny });
+
+			if (place[nx][ny] == 'P') {
+				if (track[nx][ny] <= 2) {
+					return false;
+				}
+			}
+		}
+	}
+	return true;
+}
+vector<int> solution(vector<vector<string>> places) {
+    
+    for (int i = 0; i < places.size(); i++) {
+		int p_cnt = 0;
+
+		for (int j = 0; j < 5; j++) {
+			string s = places[i][j];
+			for (int k = 0; k < 5; k++) {
+				if (s[k] == 'P') {
+					p_cnt++;
+				}
+				place[j][k] = s[k];
+			}
+		}
+		if (p_cnt < 2) {
+			answer.push_back(1);
+			continue;
+		}
+
+		int flag = 0;
+		for (int j = 0; j < 5; j++) {
+			string s = places[i][j];
+			for (int k = 0; k < 5; k++) {
+				if (s[k] == 'P') {
+					if (bfs(j, k) == false) {
+						flag = 1;
+						break;
+					}
+				}
+			}
+			if (flag == 1) break;
+		}
+		if (flag == 1) answer.push_back(0);
+		else answer.push_back(1);
+
+	}
+    return answer;
+}
