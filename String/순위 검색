@@ -1,0 +1,95 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> arr[4][3][3][3];
+
+vector<int> solution(vector<string> info, vector<string> query) {
+    vector<int> answer;
+    
+    for(int i = 0; i < info.size(); i++){
+        string word;
+        string tmp = info[i];
+        stringstream ss(tmp);
+        
+        int cnt = 0;
+        int a = 0, b = 0, c = 0, d = 0;
+        while(ss >> word){
+            if(cnt == 0){
+                if(word == "cpp") a = 1;
+                else if(word == "java") a = 2;
+                else if(word == "python") a = 3;
+            }else if(cnt == 1){
+                if(word == "backend") b = 1;
+                else if(word == "frontend") b = 2;
+            }else if(cnt == 2){
+                if(word == "junior") c = 1;
+                else if(word == "senior") c = 2;
+            }else if(cnt == 3){
+                if(word == "chicken") d = 1;
+                else if(word == "pizza") d = 2;
+            }else if(cnt == 4){
+                arr[0][b][c][d].push_back(stoi(word));
+                arr[a][0][c][d].push_back(stoi(word));
+                arr[a][b][0][d].push_back(stoi(word));
+                arr[a][b][c][0].push_back(stoi(word));
+                arr[0][0][c][d].push_back(stoi(word));
+                arr[0][b][0][d].push_back(stoi(word));
+                arr[0][b][c][0].push_back(stoi(word));
+                arr[a][0][0][d].push_back(stoi(word));
+                arr[a][0][c][0].push_back(stoi(word));
+                arr[a][b][0][0].push_back(stoi(word));
+                arr[0][0][0][d].push_back(stoi(word));
+                arr[0][0][c][0].push_back(stoi(word));
+                arr[0][b][0][0].push_back(stoi(word));
+                arr[a][0][0][0].push_back(stoi(word));
+                arr[0][0][0][0].push_back(stoi(word));
+                arr[a][b][c][d].push_back(stoi(word));
+            }
+            cnt++;
+        }
+    }
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 3; j++){
+            for(int k = 0; k < 3; k++){
+                for(int l = 0; l < 3; l++){
+                    sort(arr[i][j][k][l].begin(), arr[i][j][k][l].end());
+                }
+            }
+        }
+    }
+    for(int i = 0; i < query.size(); i++){
+        string word;
+        string tmp = query[i];
+        stringstream ss(tmp);
+        
+        int cnt = 0;
+        int a,b,c,d;
+        while(ss >> word){
+            if(cnt == 0){
+                if(word == "cpp") a = 1;
+                else if(word == "java") a = 2;
+                else if(word == "python") a = 3;
+                else if(word == "-") a = 0;
+            }else if(cnt == 2){
+                if(word == "backend") b = 1;
+                else if(word == "frontend") b = 2;
+                else if(word == "-") b = 0;
+            }else if(cnt == 4){
+                if(word == "junior") c = 1;
+                else if(word == "senior") c = 2;
+                else if(word == "-") c = 0;
+            }else if(cnt == 6){
+                if(word == "chicken") d = 1;
+                else if(word == "pizza") d = 2;
+                else if(word == "-") d = 0;
+            }else if(cnt == 7){
+                int num = stoi(word);
+                int sz = arr[a][b][c][d].size();
+                int lb = lower_bound(arr[a][b][c][d].begin(), arr[a][b][c][d].end(), num) - arr[a][b][c][d].begin();
+                answer.push_back(sz - lb);
+            }
+            cnt++;
+        }
+    }
+    return answer;
+}
