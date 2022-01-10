@@ -1,0 +1,34 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int solution(vector<int> priorities, int location) {
+    int answer = 0;
+    deque<pair<int,int>> dq;
+    deque<int> priority;
+    
+    for(int i = 0; i < priorities.size(); i++){
+        if(i == location){
+            dq.push_back({priorities[i], 1});
+        }else{
+            dq.push_back({priorities[i], 0});
+        }
+        priority.push_back(priorities[i]);
+    }
+    
+    while(1){
+        if(dq[0].first == *max_element(priority.begin(), priority.end())){
+            answer++;
+            
+            if(dq[0].second == 1) break;
+            dq.pop_front();
+            priority.pop_front();
+        }else{
+            dq.push_back({dq[0].first, dq[0].second});
+            dq.pop_front();
+            priority.push_back(priority[0]);
+            priority.pop_front();
+        }
+    }
+    return answer;
+}
