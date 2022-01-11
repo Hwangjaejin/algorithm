@@ -1,0 +1,28 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int solution(vector<int> scoville, int K) {
+    int answer = 0;
+    
+    priority_queue<int, vector<int>, greater<int>> pq(scoville.begin(), scoville.end());
+    
+    int cnt = 0;
+    while(!pq.empty()){
+        if(pq.size() == 1){
+            if(pq.top() < K) answer = -1;
+            break;
+        }
+        if(pq.top() < K){
+            int a = pq.top();
+            pq.pop();
+            a += pq.top() * 2;
+            pq.pop();
+            pq.push(a);
+            answer++;
+        }else{
+            break;
+        }
+    }
+    return answer;
+}
