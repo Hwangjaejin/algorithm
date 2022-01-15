@@ -1,0 +1,77 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
+#include <queue>
+using namespace std;
+
+int dx[4] = {0,0,1,-1};
+int dy[4] = {1,-1,0,0};
+int map[101][101];
+int visited[101][101];
+vector <int> vec;
+int n, m;
+int result = 0;
+
+void bfs(int a, int b) {
+	int num = 0;
+
+	queue <pair<int, int>> q;
+	visited[a][b] = 1;
+	q.push({ a,b });
+
+	while (!q.empty()) {
+		int x, y, xx, yy;
+
+		x = q.front().first;
+		y = q.front().second;
+
+		q.pop();
+		num++;
+
+		for (int i = 0; i < 4; i++) {
+			xx = x + dx[i];
+			yy = y + dy[i];
+
+			if (xx >= 0 && yy >= 0 && xx < n && yy < n) {
+				if (map[xx][yy] == 1 && visited[xx][yy] == 0) {
+					visited[xx][yy] = 1;
+					q.push({ xx,yy });
+				}
+			}
+		}
+	}
+	vec.push_back(num);
+}
+
+int main()
+{
+	int cnt=0;
+	string s;
+	cin >> n;
+
+	for (int i = 0; i < n; i++) {
+		cin >> s;
+		for (int j = 0; j < n; j++) {
+			map[i][j] = s[j] - '0';
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (map[i][j] == 1 && visited[i][j] == 0) {
+				cnt++;
+				bfs(i, j);
+			}
+		}
+	}
+	sort(vec.begin(), vec.end());
+
+	cout << cnt << endl;
+
+	for (int i = 0; i < vec.size(); i++) {
+		cout << vec[i] << endl;
+	}
+	return 0;
+}
