@@ -1,0 +1,61 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define INF 987654321
+using ll = long long;
+
+int dx[4] = { 0,0,1,-1 };
+int dy[4] = { 1,-1,0,0 };
+
+int n, m;
+int board[1001][1001];
+int visited[1001][1001][2] = { 0, };
+
+int bfs() {
+	queue<pair<pair<int, int>, int>> q;
+	q.push({ {0,0}, 1 }); // q.front().second : 벽을 부수는게 가능한 횟수
+	visited[0][0][1] = 1;
+
+	while (!q.empty()) {
+		int x = q.front().first.first;
+		int y = q.front().first.second;
+		int block = q.front().second;
+
+		if (x == n - 1 && y == m - 1) return visited[x][y][block];
+		q.pop();
+
+		for (int i = 0; i < 4; i++) {
+			int nx = x + dx[i];
+			int ny = y + dy[i];
+
+			if (nx < 0 || ny < 0 || nx >= n || ny >= m) continue;
+
+			if (board[nx][ny] == 1 && block == 1) {
+				q.push({ {nx,ny}, 0 });
+				visited[nx][ny][0] = visited[x][y][1] + 1;
+			} else if(board[nx][ny] == 0 && visited[nx][ny][block] == 0) {
+				q.push({ {nx,ny}, block });
+				visited[nx][ny][block] = visited[x][y][block] + 1;
+			}
+		}
+	}
+
+	return -1;
+}
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	cin >> n >> m;
+
+	for (int i = 0; i < n; i++) {
+		string s;
+		cin >> s;
+		for (int j = 0; j < m; j++) {
+			board[i][j] = s[j] - '0';
+		}
+	}
+	
+	cout << bfs();
+	return 0;
+}
