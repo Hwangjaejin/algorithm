@@ -1,0 +1,103 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define INF 987654321
+using ll = long long;
+
+int dx[4] = { 0,0,1,-1 };
+int dy[4] = { 1,-1,0,0 };
+
+int N, M;
+int board[10][10];
+int temp[10][10];
+int answer = 0;
+
+void copyBoard() {
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			temp[i][j] = board[i][j];
+		}
+	}
+}
+
+void bfs() {
+	int spreadBoard[10][10];
+	queue<pair<int, int>> virus;
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			spreadBoard[i][j] = temp[i][j];
+			if (temp[i][j] == 2) virus.push({ i,j });
+		}
+	}
+	bool visited[10][10];
+
+	while (!virus.empty()) {
+		int x = virus.front().first;
+		int y = virus.front().second;
+
+		virus.pop();
+
+		for (int i = 0; i < 4; i++) {
+			int nx = x + dx[i];
+			int ny = y + dy[i];
+
+			if (nx < 0 || ny < 0 || nx >= N || ny >= M) continue;
+			if (spreadBoard[nx][ny] == 0) {
+				spreadBoard[nx][ny] = 2;
+				virus.push({ nx,ny });
+			}
+		}
+	}
+
+	int cnt = 0;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			if (spreadBoard[i][j] == 0) cnt++;
+		}
+	}
+	answer = max(answer, cnt);
+}
+void makeWall(int cnt) {
+	if (cnt == 3) {
+		bfs();
+		return;
+	}
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			if (temp[i][j] == 0) {
+				temp[i][j] = 1;
+				makeWall(cnt + 1);
+				temp[i][j] = 0;
+			}
+		}
+	}
+}
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	cin >> N >> M;
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			cin >> board[i][j];
+		}
+	}
+	
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			if (board[i][j] == 0) {
+				copyBoard();
+
+				temp[i][j] = 1;
+				makeWall(1);
+				temp[i][j] = 0;
+			}
+		}
+	}
+
+	cout << answer;
+	return 0;
+}
