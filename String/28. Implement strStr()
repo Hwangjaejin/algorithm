@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        int answer = 0;
+        
+        if(needle.size() == 0) return 0;
+        
+        for(int i = 0; i < haystack.size(); i++){
+            bool diff = true;
+            if(haystack[i] == needle[0]){
+                if(haystack.size() - i < needle.size()) break;
+                for(int j = 0; j < needle.size(); j++){
+                    if(haystack[i + j] != needle[j]){
+                        break;
+                    }
+                    if(j == needle.size() - 1) diff = false;
+                }
+            }
+            if(diff == false) return i;
+        }
+        return -1;
+    }
+};
